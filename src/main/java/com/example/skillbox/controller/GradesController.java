@@ -1,14 +1,13 @@
 package com.example.skillbox.controller;
 
+import com.example.skillbox.exceptions.NoGradeException;
+import com.example.skillbox.exceptions.NoStudentException;
 import com.example.skillbox.service.GradesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class GradesController {
@@ -16,18 +15,34 @@ public class GradesController {
     GradesService gradesService;
 
     @RequestMapping(value = "/totalavggrade",
-            method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
+            method = RequestMethod.GET)
     public ResponseEntity<?> calculateTotalAvgGrade(@RequestParam Long studentId) {
         int avgGrade = gradesService.calculateAvgGradeForStudent(studentId);
-        return ResponseEntity.ok().body(avgGrade);
+        return ResponseEntity
+                .ok()
+                .body(avgGrade);
     }
 
     @RequestMapping(value = "/avggrade",
-            method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> calculateAvgGrade(@RequestParam Long studentId, @RequestParam Long subjectId) {
-        int avgGrade = gradesService.calculateGradeBySubjectForStudent(studentId, subjectId);
-        return ResponseEntity.ok().body(avgGrade);
+            method = RequestMethod.GET)
+    public ResponseEntity<?> calculateAvgGrade(@RequestParam Long studentId, @RequestParam String subject) {
+        int avgGrade = gradesService.calculateGradeBySubjectForStudent(studentId, subject);
+        return ResponseEntity
+                .ok()
+                .body(avgGrade);
+    }
+
+    @ExceptionHandler({NoGradeException.class, NoStudentException.class})
+    public ResponseEntity<?> exception(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity<?> allException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
     }
 }

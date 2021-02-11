@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.skillbox.entity.StudentDto.transformToModel;
@@ -25,7 +26,18 @@ public class StudentsServiceImpl implements StudentsService {
     }
 
     @Override
+    public void deleteById(Long id) {
+        studentRepository.deleteById(id);
+        log.debug("deleted student with id: {}", id);
+    }
+
+    @Override
+    public List<Student> getAll() {
+        return studentRepository.findAll();
+    }
+
+    @Override
     public Optional<Student> getById(Long studentId) {
-       return studentRepository.findById(studentId);
+        return studentRepository.findById(studentId);
     }
 }
