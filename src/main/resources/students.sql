@@ -7,7 +7,7 @@ CREATE TABLE 'Students' (
 
 CREATE TABLE `Items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `cart_id` int(11) unsigned NOT NULL,
+  `cart_id` int(11) unsigned,
   PRIMARY KEY (`id`),
   KEY `cart_id` (`cart_id`),
   CONSTRAINT `items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `Cart` (`cart_id`)
